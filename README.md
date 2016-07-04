@@ -3,7 +3,7 @@
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/crunch-accounting/salesforce-api-php-wrapper.svg?style=flat-square)](https://scrutinizer-ci.com/g/crunch-accounting/salesforce-api-php-wrapper/)
 [![Travis](https://img.shields.io/travis/crunch-accounting/salesforce-api-php-wrapper.svg?style=flat-square)](https://travis-ci.org/crunch-accounting/salesforce-api-php-wrapper)
 
-# Salesforce PHP Library
+# Salesforce PHP Bundle
 
 A simple library for interacting with the Salesforce REST API.
 
