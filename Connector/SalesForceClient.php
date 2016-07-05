@@ -1,10 +1,10 @@
 <?php
 
-namespace Akeneo\Bundle\SalesForceBundle\Connector;
+namespace Akeneo\SalesForce\Connector;
 
-use Akeneo\Bundle\SalesForceBundle\Authentification\AccessToken;
-use Akeneo\Bundle\SalesForceBundle\Authentification\AccessTokenGenerator;
-use Akeneo\Bundle\SalesForceBundle\Exception\AuthenticationException;
+use Akeneo\SalesForce\Authentification\AccessToken;
+use Akeneo\SalesForce\Authentification\AccessTokenGenerator;
+use Akeneo\SalesForce\Exception\AuthenticationException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
 

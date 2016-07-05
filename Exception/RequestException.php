@@ -1,6 +1,6 @@
 <?php
 
-namespace Akeneo\Bundle\SalesForceBundle\Exception;
+namespace Akeneo\SalesForce\Exception;
 
 class RequestException extends \Exception
 {

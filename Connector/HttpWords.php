@@ -1,6 +1,6 @@
 <?php
 
-namespace Akeneo\Bundle\SalesForceBundle\Connector;
+namespace Akeneo\SalesForce\Connector;
 
 /**
  * @author Anael Chardan <anael.chardan@akeneo.com>

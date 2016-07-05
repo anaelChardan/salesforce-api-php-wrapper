@@ -1,6 +1,6 @@
 <?php
 
-namespace Akeneo\Bundle\SalesForceBundle\Query;
+namespace Akeneo\SalesForce\Query;
 
 /**
  * @author Anael Chardan <anael.chardan@akeneo.com>

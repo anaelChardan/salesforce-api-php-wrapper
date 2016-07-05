@@ -1,6 +1,6 @@
 <?php
 
-namespace Akeneo\Bundle\SalesForceBundle\Authentification;
+namespace Akeneo\SalesForce\Authentification;
 
 use Carbon\Carbon;
 
