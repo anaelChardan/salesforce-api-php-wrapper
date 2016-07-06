@@ -82,8 +82,9 @@ $client->search($queryBuilder->getQuery());
 
 ```
 ### Next
-    - Fit the old repo structure -> [Thanks to Crunch](https://github.com/crunch-accounting/salesforce-api-php-wrapper)
-    - Make tests with PHP Spec
+
+- Fit the old repo structure -> [Thanks to Crunch](https://github.com/crunch-accounting/salesforce-api-php-wrapper)
+- Make tests with PHP Spec
 
 ### More
 
