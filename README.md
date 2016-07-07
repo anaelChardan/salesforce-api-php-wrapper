@@ -93,4 +93,3 @@ This library is made with <3 by [Akeneo](https://www.akeneo.com/)
 Do not hesitate to contribute.
 
 Maintained by Anaël CHARDAN.
-
