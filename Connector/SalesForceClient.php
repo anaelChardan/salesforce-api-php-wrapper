@@ -328,6 +328,19 @@ class SalesForceClient
     }
 
     /**
+     * @param string $imageUrl
+     *
+     * @return mixed
+     * @throws AuthenticationException
+     * @throws \Exception
+     */
+    public function downloadImageFromUrl(string $imageUrl)
+    {
+        return $this->request(HttpWords::GET, $imageUrl, $this->getHeaderWithAuthorization());
+    }
+
+
+    /**
      * @param string $method
      * @param string $url
      * @param string $data
