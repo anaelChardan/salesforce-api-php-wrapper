@@ -361,11 +361,18 @@ class SalesForceClient
                 throw $e;
             }
 
+            $error = json_decode($e->getResponse()->getBody(), true);
+
             //If its an auth error convert to an auth exception
             if ($e->getResponse()->getStatusCode() == 401) {
-                $error = json_decode($e->getResponse()->getBody(), true);
                 throw new AuthenticationException($error[0]['errorCode'], $error[0]['message']);
             }
+
+            //Invalid data sent to salesforce
+            if ($e->getResponse()->getStatusCode() == 400 && $error[0]['errorCode'] == 'DUPLICATES_DETECTED') {
+                throw new DuplicateDetectedException($error, $e->getRequest()->getUri());
+            }
+
             throw new \Exception(json_encode([$e->getMessage(), (string) $e->getResponse()->getBody()]));
         }
     }
