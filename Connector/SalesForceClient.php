@@ -5,6 +5,7 @@ namespace Akeneo\SalesForce\Connector;
 use Akeneo\SalesForce\Authentification\AccessToken;
 use Akeneo\SalesForce\Authentification\AccessTokenGenerator;
 use Akeneo\SalesForce\Exception\AuthenticationException;
+use Akeneo\SalesForce\Exception\DuplicateDetectedException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
 
