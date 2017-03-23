@@ -369,9 +369,9 @@ class SalesForceClient
             }
 
             //Invalid data sent to salesforce
-            if ($e->getResponse()->getStatusCode() == 400 && $error[0]['errorCode'] == 'DUPLICATES_DETECTED') {
+            /*if ($e->getResponse()->getStatusCode() == 400 && $error[0]['errorCode'] == 'DUPLICATES_DETECTED') {
                 throw new DuplicateDetectedException($error, $e->getRequest()->getUri());
-            }
+            }*/
 
             throw new \Exception(json_encode([$e->getMessage(), (string) $e->getResponse()->getBody()]));
         }
