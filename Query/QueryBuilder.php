@@ -114,6 +114,30 @@ class QueryBuilder
     }
 
     /**
+     * @param string $table
+     *
+     * @return QueryBuilder
+     */
+    public function limit(int $maxResult): QueryBuilder
+    {
+        $this->query = sprintf('%s LIMIT %s', $this->query, $maxResult);
+
+        return $this;
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return QueryBuilder
+     */
+    public function offset(int $firstResult): QueryBuilder
+    {
+        $this->query = sprintf('%s OFFSET %s', $this->query, $firstResult);
+
+        return $this;
+    }
+
+    /**
      * @param string $name
      * @param string $value
      *
