@@ -68,37 +68,23 @@ class QueryBuilder
     /**
      * @param string $fieldName
      * @param string $value
-     * @param bool   $quoted
      *
      * @return string
      */
-    public function getEqualCondition(string $fieldName, string $value, bool $quoted = true): string
+    public function getEqualCondition(string $fieldName, string $value): string
     {
-        return $this->setOperator($fieldName, '=', $value, $quoted);
+        return sprintf('%s = \'%s\'', $fieldName, $value);
     }
 
     /**
      * @param string $fieldName
      * @param string $value
-     * @param bool   $quoted
      *
      * @return string
      */
-    public function getNotEqualCondition(string $fieldName, string $value, bool $quoted = true): string
+    public function getNotEqualCondition(string $fieldName, string $value): string
     {
-        return $this->setOperator($fieldName, '!=', $value, $quoted);
-    }
-
-    /**
-     * @param string $fieldName
-     * @param string $value
-     * @param bool   $quoted
-     *
-     * @return string
-     */
-    public function getLikeCondition(string $fieldName, string $value, bool $quoted = true): string
-    {
-        return $this->setOperator($fieldName, 'LIKE', $value, $quoted);
+        return sprintf('%s != \'%s\'', $fieldName, $value);
     }
 
     /**
@@ -109,6 +95,30 @@ class QueryBuilder
     public function andWhere(string $condition): QueryBuilder
     {
         $this->query = sprintf('%s AND %s', $this->query, $condition);
+
+        return $this;
+    }
+
+    /**
+     * @param string $condition
+     *
+     * @return QueryBuilder
+     */
+    public function orWhere(string $condition): QueryBuilder
+    {
+        $this->query = sprintf('%s OR %s', $this->query, $condition);
+
+        return $this;
+    }
+
+    /**
+     * @param string $condition
+     *
+     * @return QueryBuilder
+     */
+    public function orderBy(string $fieldName): QueryBuilder
+    {
+        $this->query = sprintf('%s ORDER BY %s', $this->query, $fieldName);
 
         return $this;
     }
@@ -138,20 +148,5 @@ class QueryBuilder
         }
 
         return $result;
-    }
-
-    /**
-     * @param string $fieldName
-     * @param string $operator
-     * @param string $value
-     * @param bool   $quoted
-     *
-     * @return string
-     */
-    protected function setOperator(string $fieldName, string $operator, string $value, $quoted = true): string
-    {
-        $quoteText = $quoted ? '\'' : '';
-
-        return sprintf('%s %s %s%s%s', $fieldName, $operator, $quoteText, $value, $quoteText);
     }
 }
