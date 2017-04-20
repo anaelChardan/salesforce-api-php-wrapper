@@ -114,6 +114,30 @@ class QueryBuilder
     }
 
     /**
+     * @param string $condition
+     *
+     * @return QueryBuilder
+     */
+    public function orWhere(string $condition): QueryBuilder
+    {
+        $this->query = sprintf('%s OR %s', $this->query, $condition);
+
+        return $this;
+    }
+
+    /**
+     * @param string $condition
+     *
+     * @return QueryBuilder
+     */
+    public function orderBy(string $fieldName): QueryBuilder
+    {
+        $this->query = sprintf('%s ORDER BY %s', $this->query, $fieldName);
+
+        return $this;
+    }
+
+    /**
      * @param string $name
      * @param string $value
      *
