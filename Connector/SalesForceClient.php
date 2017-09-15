@@ -7,7 +7,7 @@ use Akeneo\SalesForce\Authentification\AccessTokenGenerator;
 use Akeneo\SalesForce\Exception\AuthenticationException;
 use Akeneo\SalesForce\Exception\DuplicateDetectedException;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\RequestException;
+use Akeneo\SalesForce\Exception\RequestException;
 
 /**
  * @author Anael Chardan <anael.chardan@akeneo.com>
@@ -357,7 +357,7 @@ class SalesForceClient
             $response = $this->clientGuzzle->$method($url, $data);
 
             return $response;
-        } catch (RequestException $e) {
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->getResponse() === null) {
                 throw $e;
             }
@@ -365,16 +365,24 @@ class SalesForceClient
             $error = json_decode($e->getResponse()->getBody(), true);
 
             //If its an auth error convert to an auth exception
-            if ($e->getResponse()->getStatusCode() == 401) {
+            if (isset($error[0])
+                && isset($error[0]['errorCode'])
+                && isset($error[0]['message'])
+                && $e->getResponse()->getStatusCode() == 401
+            ) {
                 throw new AuthenticationException($error[0]['errorCode'], $error[0]['message']);
             }
 
             //Invalid data sent to salesforce
-            if ($e->getResponse()->getStatusCode() == 400 && $error[0]['errorCode'] == 'DUPLICATES_DETECTED') {
+            if (isset($error[0])
+                && isset($error[0]['errorCode'])
+                && $e->getResponse()->getStatusCode() == 400
+                && $error[0]['errorCode'] == 'DUPLICATES_DETECTED'
+            ) {
                 throw new DuplicateDetectedException($error, $e->getRequest()->getUri());
             }
 
-            throw new \Exception(json_encode([$e->getMessage(), (string) $e->getResponse()->getBody()]));
+            throw new RequestException($e->getMessage(), (string) $e->getResponse()->getBody());
         }
     }
 }
