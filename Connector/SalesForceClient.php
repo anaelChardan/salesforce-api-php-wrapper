@@ -15,7 +15,7 @@ class SalesForceClient
 {
     const BASE_API_URL   = '/services/data/v37.0/sobjects';
     const BASE_QUERY_URL = '/services/data/v37.0/query';
-    const BASE_PROCESS_RULES_URL = '/services/data/v37.0/process/rules';
+    const BASE_PROCESS_URL = '/services/data/v37.0/process';
 
     /**
      * @var string
@@ -110,9 +110,17 @@ class SalesForceClient
         return $results;
     }
 
+    public function getProcessApprovals()
+    {
+        $url      = sprintf('%s%s/%s', $this->getBaseUrl(), static::BASE_PROCESS_URL, 'approvals');
+        $response = $this->request(HttpWords::GET, $url, $this->getHeaderWithAuthorization());
+
+        return json_decode($response->getBody(), true);
+    }
+
     public function getProcessRuleByObjectId(string $objectName, string $id)
     {
-        $url      = sprintf('%s%s/%s/%s', $this->getBaseUrl(), static::BASE_PROCESS_RULES_URL, $objectName, $id);
+        $url      = sprintf('%s%s/%s/%s/%s', $this->getBaseUrl(), static::BASE_PROCESS_URL, 'rules', $objectName, $id);
         $response = $this->request(HttpWords::GET, $url, $this->getHeaderWithAuthorization());
 
         return json_decode($response->getBody(), true);
