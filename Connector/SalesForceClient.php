@@ -110,7 +110,15 @@ class SalesForceClient
         return $results;
     }
 
-    public function getProcessApprovals(array $data = [])
+    public function getProcessApprovals()
+    {
+        $url      = sprintf('%s%s/%s', $this->getBaseUrl(), static::BASE_PROCESS_URL, 'approvals');
+        $response = $this->request(HttpWords::GET, $url, $this->getHeaderWithAuthorization());
+
+        return json_decode($response->getBody(), true);
+    }
+
+    public function submitProcessApproval(array $data = [])
     {
         $url      = sprintf('%s%s/%s', $this->getBaseUrl(), static::BASE_PROCESS_URL, 'approvals');
         $response = $this->request(HttpWords::POST, $url, $this->getHeaderWithAuthorizationAndData($data));
