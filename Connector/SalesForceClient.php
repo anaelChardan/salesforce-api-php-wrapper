@@ -6,6 +6,7 @@ use Akeneo\SalesForce\Authentification\AccessToken;
 use Akeneo\SalesForce\Authentification\AccessTokenGenerator;
 use Akeneo\SalesForce\Exception\AuthenticationException;
 use Akeneo\SalesForce\Exception\DuplicateDetectedException;
+use Akeneo\SalesForce\Search\ParameterizedSearchBuilder;
 use GuzzleHttp\Client as GuzzleClient;
 use Akeneo\SalesForce\Exception\RequestException;
 
@@ -17,6 +18,7 @@ class SalesForceClient
     const BASE_API_URL       = '/services/data/v38.0/sobjects';
     const BASE_QUERY_URL     = '/services/data/v38.0/query';
     const BASE_COMPOSITE_URL = '/services/data/v38.0/composite';
+    const BASE_SEARCH_URL    = '/services/data/v38.0/parameterizedSearch';
 
     /**
      * @var string
@@ -107,6 +109,22 @@ class SalesForceClient
                 $results = array_merge($results, $more_results);
             }
         }
+
+        return $results;
+    }
+
+    public function parameterizedSearch(string $query)
+    {
+        $url = sprintf(
+            '%s%s/?q=%s',
+            $this->getBaseUrl(),
+            static::BASE_SEARCH_URL,
+            $query
+        );
+
+        $response = $this->request(HttpWords::GET, $url, $this->getHeaderWithAuthorization());
+        $data     = json_decode($response->getBody(), true);
+        $results = $data['searchRecords'];
 
         return $results;
     }
