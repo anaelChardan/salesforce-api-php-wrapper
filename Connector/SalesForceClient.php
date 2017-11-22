@@ -14,8 +14,9 @@ use Akeneo\SalesForce\Exception\RequestException;
  */
 class SalesForceClient
 {
-    const BASE_API_URL   = '/services/data/v37.0/sobjects';
-    const BASE_QUERY_URL = '/services/data/v37.0/query';
+    const BASE_API_URL       = '/services/data/v38.0/sobjects';
+    const BASE_QUERY_URL     = '/services/data/v38.0/query';
+    const BASE_COMPOSITE_URL = '/services/data/v38.0/composite';
 
     /**
      * @var string
@@ -139,7 +140,7 @@ class SalesForceClient
         return json_decode($response->getBody(), true);
     }
 
-    public function findById($objectName, $objectId, array $fields = [])
+    public function findById(string $objectName, string $objectId, array $fields = [])
     {
         $url      = sprintf(
             '%s%s/%s/%s?fields=%s',
@@ -154,7 +155,7 @@ class SalesForceClient
         return json_decode($response->getBody(), true);
     }
 
-    public function insert($objectName, array $data = [])
+    public function insert(string $objectName, array $data = [])
     {
         $url      = sprintf('%s%s/%s/', $this->getBaseUrl(), static::BASE_API_URL, $objectName);
         $response = $this->request(HttpWords::POST, $url, $this->getHeaderWithAuthorizationAndData($data));
@@ -181,7 +182,7 @@ class SalesForceClient
         return json_decode($response->getBody(), true);
     }
 
-    public function update($objectName, $objectId, $data = [])
+    public function update(string $objectName, string $objectId, array $data = [])
     {
         $url      = sprintf(
             '%s%s/%s/%s',
@@ -195,7 +196,7 @@ class SalesForceClient
         return json_decode($response->getBody(), true);
     }
 
-    public function delete($objectName, $objectId)
+    public function delete(string $objectName, string $objectId)
     {
         $url = sprintf(
             '%s%s/%s/%s',
@@ -208,6 +209,18 @@ class SalesForceClient
         $this->request(HttpWords::DELETE, $url, $this->getHeaderWithAuthorization());
 
         return true;
+    }
+
+    public function compositeRequest(array $data): array
+    {
+        $url = sprintf(
+            '%s%s/',
+            $this->getBaseUrl(),
+            static::BASE_COMPOSITE_URL
+        );
+        $response = $this->request(HttpWords::POST, $url, $this->getHeaderWithAuthorizationAndData($data));
+
+        return json_decode($response->getBody(), true);
     }
 
     protected function getBaseUrl()
