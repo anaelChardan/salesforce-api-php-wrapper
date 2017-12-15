@@ -15,10 +15,10 @@ use Akeneo\SalesForce\Exception\RequestException;
  */
 class SalesForceClient
 {
-    const BASE_API_URL       = '/services/data/v38.0/sobjects';
-    const BASE_QUERY_URL     = '/services/data/v38.0/query';
-    const BASE_COMPOSITE_URL = '/services/data/v38.0/composite';
-    const BASE_SEARCH_URL    = '/services/data/v38.0/parameterizedSearch';
+    const BASE_API_URL       = '/services/data/v40.0/sobjects';
+    const BASE_QUERY_URL     = '/services/data/v40.0/query';
+    const BASE_COMPOSITE_URL = '/services/data/v40.0/composite';
+    const BASE_SEARCH_URL    = '/services/data/v40.0/parameterizedSearch';
 
     /**
      * @var string
