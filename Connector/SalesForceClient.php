@@ -17,6 +17,7 @@ class SalesForceClient
 {
     const BASE_API_URL       = '/services/data/v40.0/sobjects';
     const BASE_QUERY_URL     = '/services/data/v40.0/query';
+    const BASE_PROCESS_URL   = '/services/data/v40.0/process';
     const BASE_COMPOSITE_URL = '/services/data/v40.0/composite';
     const BASE_SEARCH_URL    = '/services/data/v40.0/parameterizedSearch';
 
@@ -113,6 +114,30 @@ class SalesForceClient
         return $results;
     }
 
+    public function getProcessApprovals()
+    {
+        $url      = sprintf('%s%s/%s', $this->getBaseUrl(), static::BASE_PROCESS_URL, 'approvals');
+        $response = $this->request(HttpWords::GET, $url, $this->getHeaderWithAuthorization());
+
+        return json_decode($response->getBody(), true);
+    }
+
+    public function submitProcessApproval(array $data = [])
+    {
+        $url      = sprintf('%s%s/%s', $this->getBaseUrl(), static::BASE_PROCESS_URL, 'approvals');
+        $response = $this->request(HttpWords::POST, $url, $this->getHeaderWithAuthorizationAndData($data));
+
+        return json_decode($response->getBody(), true);
+    }
+
+    public function getProcessRuleByObjectId(string $objectName, string $id)
+    {
+        $url      = sprintf('%s%s/%s/%s/%s', $this->getBaseUrl(), static::BASE_PROCESS_URL, 'rules', $objectName, $id);
+        $response = $this->request(HttpWords::GET, $url, $this->getHeaderWithAuthorization());
+
+        return json_decode($response->getBody(), true);
+    }
+  
     public function parameterizedSearch(string $query)
     {
         $url = sprintf(
@@ -404,16 +429,7 @@ class SalesForceClient
                 throw new AuthenticationException($error[0]['errorCode'], $error[0]['message']);
             }
 
-            //Invalid data sent to salesforce
-            if (isset($error[0])
-                && isset($error[0]['errorCode'])
-                && $e->getResponse()->getStatusCode() == 400
-                && $error[0]['errorCode'] == 'DUPLICATES_DETECTED'
-            ) {
-                throw new DuplicateDetectedException($error, $e->getRequest()->getUri());
-            }
-
-            throw new RequestException($e->getMessage(), (string) $e->getResponse()->getBody());
+            throw new \Exception((string) $e->getResponse()->getBody());
         }
     }
 }
