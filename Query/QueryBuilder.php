@@ -121,6 +121,15 @@ class QueryBuilder
     public function limit(int $maxResult): QueryBuilder
     {
         $this->query = sprintf('%s LIMIT %s', $this->query, $maxResult);
+    }
+
+     * @param string $condition
+     *
+     * @return QueryBuilder
+     */
+    public function orWhere(string $condition): QueryBuilder
+    {
+        $this->query = sprintf('%s OR %s', $this->query, $condition);
 
         return $this;
     }
@@ -133,6 +142,15 @@ class QueryBuilder
     public function offset(int $firstResult): QueryBuilder
     {
         $this->query = sprintf('%s OFFSET %s', $this->query, $firstResult);
+    }
+  
+     * @param string $condition
+     *
+     * @return QueryBuilder
+     */
+    public function orderBy(string $fieldName): QueryBuilder
+    {
+        $this->query = sprintf('%s ORDER BY %s', $this->query, $fieldName);
 
         return $this;
     }

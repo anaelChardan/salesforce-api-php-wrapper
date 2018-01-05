@@ -5,17 +5,21 @@ namespace Akeneo\SalesForce\Connector;
 use Akeneo\SalesForce\Authentification\AccessToken;
 use Akeneo\SalesForce\Authentification\AccessTokenGenerator;
 use Akeneo\SalesForce\Exception\AuthenticationException;
+use Akeneo\SalesForce\Exception\DuplicateDetectedException;
+use Akeneo\SalesForce\Search\ParameterizedSearchBuilder;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\RequestException;
+use Akeneo\SalesForce\Exception\RequestException;
 
 /**
  * @author Anael Chardan <anael.chardan@akeneo.com>
  */
 class SalesForceClient
 {
-    const BASE_API_URL   = '/services/data/v37.0/sobjects';
-    const BASE_QUERY_URL = '/services/data/v37.0/query';
-    const BASE_PROCESS_URL = '/services/data/v37.0/process';
+    const BASE_API_URL       = '/services/data/v40.0/sobjects';
+    const BASE_QUERY_URL     = '/services/data/v40.0/query';
+    const BASE_PROCESS_URL   = '/services/data/v40.0/process';
+    const BASE_COMPOSITE_URL = '/services/data/v40.0/composite';
+    const BASE_SEARCH_URL    = '/services/data/v40.0/parameterizedSearch';
 
     /**
      * @var string
@@ -133,6 +137,22 @@ class SalesForceClient
 
         return json_decode($response->getBody(), true);
     }
+  
+    public function parameterizedSearch(string $query)
+    {
+        $url = sprintf(
+            '%s%s/?q=%s',
+            $this->getBaseUrl(),
+            static::BASE_SEARCH_URL,
+            $query
+        );
+
+        $response = $this->request(HttpWords::GET, $url, $this->getHeaderWithAuthorization());
+        $data     = json_decode($response->getBody(), true);
+        $results = $data['searchRecords'];
+
+        return $results;
+    }
 
     public function getAllRessources()
     {
@@ -163,7 +183,7 @@ class SalesForceClient
         return json_decode($response->getBody(), true);
     }
 
-    public function findById($objectName, $objectId, array $fields = [])
+    public function findById(string $objectName, string $objectId, array $fields = [])
     {
         $url      = sprintf(
             '%s%s/%s/%s?fields=%s',
@@ -178,7 +198,7 @@ class SalesForceClient
         return json_decode($response->getBody(), true);
     }
 
-    public function insert($objectName, array $data = [])
+    public function insert(string $objectName, array $data = [])
     {
         $url      = sprintf('%s%s/%s/', $this->getBaseUrl(), static::BASE_API_URL, $objectName);
         $response = $this->request(HttpWords::POST, $url, $this->getHeaderWithAuthorizationAndData($data));
@@ -205,7 +225,7 @@ class SalesForceClient
         return json_decode($response->getBody(), true);
     }
 
-    public function update($objectName, $objectId, $data = [])
+    public function update(string $objectName, string $objectId, array $data = [])
     {
         $url      = sprintf(
             '%s%s/%s/%s',
@@ -219,7 +239,7 @@ class SalesForceClient
         return json_decode($response->getBody(), true);
     }
 
-    public function delete($objectName, $objectId)
+    public function delete(string $objectName, string $objectId)
     {
         $url = sprintf(
             '%s%s/%s/%s',
@@ -232,6 +252,18 @@ class SalesForceClient
         $this->request(HttpWords::DELETE, $url, $this->getHeaderWithAuthorization());
 
         return true;
+    }
+
+    public function compositeRequest(array $data): array
+    {
+        $url = sprintf(
+            '%s%s/',
+            $this->getBaseUrl(),
+            static::BASE_COMPOSITE_URL
+        );
+        $response = $this->request(HttpWords::POST, $url, $this->getHeaderWithAuthorizationAndData($data));
+
+        return json_decode($response->getBody(), true);
     }
 
     protected function getBaseUrl()
@@ -381,7 +413,7 @@ class SalesForceClient
             $response = $this->clientGuzzle->$method($url, $data);
 
             return $response;
-        } catch (RequestException $e) {
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
             if ($e->getResponse() === null) {
                 throw $e;
             }
@@ -389,7 +421,11 @@ class SalesForceClient
             $error = json_decode($e->getResponse()->getBody(), true);
 
             //If its an auth error convert to an auth exception
-            if ($e->getResponse()->getStatusCode() == 401) {
+            if (isset($error[0])
+                && isset($error[0]['errorCode'])
+                && isset($error[0]['message'])
+                && $e->getResponse()->getStatusCode() == 401
+            ) {
                 throw new AuthenticationException($error[0]['errorCode'], $error[0]['message']);
             }
 
